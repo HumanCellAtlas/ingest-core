@@ -1,6 +1,5 @@
 package org.humancellatlas.ingest.core;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -11,7 +10,6 @@ import lombok.Data;
  */
 @Data
 public class Accession {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String number;
 
     protected Accession() {
