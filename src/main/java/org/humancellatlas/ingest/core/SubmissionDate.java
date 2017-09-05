@@ -1,5 +1,6 @@
 package org.humancellatlas.ingest.core;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.Date;
@@ -12,6 +13,7 @@ import java.util.Date;
  */
 @Data
 public class SubmissionDate {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Date date;
 
     protected SubmissionDate() {

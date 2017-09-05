@@ -1,6 +1,7 @@
 package org.humancellatlas.ingest.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,8 +24,11 @@ public abstract class AbstractEntity implements Identifiable<String> {
 
     private @JsonIgnore EntityType type;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     protected String uuid;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     protected SubmissionDate submissionDate;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     protected UpdateDate updateDate;
 
     protected AbstractEntity(EntityType type,
