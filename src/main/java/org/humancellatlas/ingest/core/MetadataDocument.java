@@ -29,18 +29,6 @@ public abstract class MetadataDocument extends AbstractEntity {
         this.content = content;
     }
 
-    public void setAccession(Accession accession){
-        this.accession = accession;
-    }
-
-    public void setSubmissionDate(SubmissionDate submissionDate){
-        this.submissionDate = submissionDate;
-    }
-
-    public void setUpdateDate(UpdateDate updateDate) {
-        this.updateDate = updateDate;
-    }
-
     protected MetadataDocument(){
 
     }
