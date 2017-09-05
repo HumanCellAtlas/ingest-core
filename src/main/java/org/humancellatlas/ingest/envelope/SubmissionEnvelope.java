@@ -8,6 +8,7 @@ import org.humancellatlas.ingest.core.SubmissionDate;
 import org.humancellatlas.ingest.core.UpdateDate;
 import org.humancellatlas.ingest.core.Uuid;
 import org.humancellatlas.ingest.assay.Assay;
+import org.humancellatlas.ingest.file.File;
 import org.humancellatlas.ingest.project.Project;
 import org.humancellatlas.ingest.protocol.Protocol;
 import org.humancellatlas.ingest.sample.Sample;
@@ -36,7 +37,9 @@ public class SubmissionEnvelope extends AbstractEntity {
     @DBRef
     private List<Protocol> protocols;
 
-    public SubmissionEnvelope(Uuid uuid,
+    private List<File> files;
+
+    public SubmissionEnvelope(String uuid,
                               SubmissionDate submissionDate,
                               UpdateDate updateDate,
                               List<Project> projects,

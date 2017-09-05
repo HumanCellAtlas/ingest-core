@@ -1,21 +1,25 @@
 package org.humancellatlas.ingest.file;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
+import org.humancellatlas.ingest.core.AbstractEntity;
+import org.humancellatlas.ingest.core.EntityType;
+import org.humancellatlas.ingest.core.SubmissionDate;
+import org.humancellatlas.ingest.core.UpdateDate;
 
-import java.util.UUID;
 
 /**
  * Created by rolando on 01/09/2017.
  */
 @Getter
-public class File {
-    private String id;
-    private String metadataUUID;
+public class File extends AbstractEntity {
+    private String fileName;
+    private String cloudUrl;
 
-    @JsonCreator
-    public File(){
-        this.id = UUID.randomUUID().toString();
-        metadataUUID = "";
+    protected File(){
+
+    }
+
+    protected File(EntityType type, String uuid, SubmissionDate submissionDate, UpdateDate updateDate) {
+        super(type, uuid, submissionDate, updateDate);
     }
 }

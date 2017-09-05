@@ -10,6 +10,7 @@ import org.humancellatlas.ingest.core.UpdateDate;
 import org.humancellatlas.ingest.core.Uuid;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
 
 /**
  * Javadocs go here!
@@ -23,8 +24,7 @@ public class Analysis extends MetadataDocument {
         super(EntityType.ANALYSIS, null, new SubmissionDate(new Date()), new UpdateDate(new Date()), null, null);
     }
 
-    @JsonCreator
-    public Analysis(Object content) {
-        super(EntityType.ANALYSIS, null, new SubmissionDate(new Date()), new UpdateDate(new Date()), null, content);
+    public Analysis(EntityType type, String uuid, SubmissionDate submissionDate, UpdateDate updateDate, Accession accession, LinkedHashMap content) {
+        super(type, uuid, submissionDate, updateDate, accession, content);
     }
 }
