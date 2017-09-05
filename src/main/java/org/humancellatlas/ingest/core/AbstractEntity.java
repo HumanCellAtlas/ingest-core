@@ -24,11 +24,8 @@ public abstract class AbstractEntity implements Identifiable<String> {
 
     private @JsonIgnore EntityType type;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     protected String uuid;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     protected SubmissionDate submissionDate;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     protected UpdateDate updateDate;
 
     protected AbstractEntity(EntityType type,

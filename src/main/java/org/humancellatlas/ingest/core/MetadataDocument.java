@@ -15,7 +15,6 @@ import java.util.LinkedHashMap;
 @Getter
 @Setter
 public abstract class MetadataDocument extends AbstractEntity {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Accession accession;
     private LinkedHashMap<String, Object> content;
 

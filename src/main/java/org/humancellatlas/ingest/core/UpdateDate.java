@@ -13,7 +13,6 @@ import java.util.Date;
  */
 @Data
 public class UpdateDate {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Date date;
 
     protected UpdateDate() {
