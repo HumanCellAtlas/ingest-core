@@ -3,6 +3,8 @@ package org.humancellatlas.ingest.core;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.LinkedHashMap;
+
 /**
  * Javadocs go here!
  *
@@ -10,19 +12,25 @@ import lombok.Setter;
  * @date 31/08/17
  */
 @Getter
+@Setter
 public abstract class MetadataDocument extends AbstractEntity {
-    private final Accession accession;
-    private final Object content;
+    private Accession accession;
+    private LinkedHashMap<String, Object> content;
 
     protected MetadataDocument(EntityType type,
-                               Uuid uuid,
+                               String uuid,
                                SubmissionDate submissionDate,
                                UpdateDate updateDate,
                                Accession accession,
-                               Object content) {
+                               LinkedHashMap content) {
         super(type, uuid, submissionDate, updateDate);
 
         this.accession = accession;
         this.content = content;
     }
+
+    protected MetadataDocument(){
+
+    }
+
 }

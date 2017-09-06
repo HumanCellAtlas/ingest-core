@@ -10,6 +10,7 @@ import org.humancellatlas.ingest.core.UpdateDate;
 import org.humancellatlas.ingest.core.Uuid;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
 
 /**
  * Javadocs go here!
@@ -20,11 +21,15 @@ import java.util.Date;
 @Getter
 public class Protocol extends MetadataDocument {
     protected Protocol() {
-        super(EntityType.PROTOCOL, null, new SubmissionDate(new Date()), new UpdateDate(new Date()), null, null);
+        super(EntityType.PROTOCOL, null, null, null, null, null);
+    }
+
+    public Protocol(EntityType type, String uuid, SubmissionDate submissionDate, UpdateDate updateDate, Accession accession, LinkedHashMap content) {
+        super(type, uuid, submissionDate, updateDate, accession, content);
     }
 
     @JsonCreator
-    public Protocol(Object content) {
+    protected Protocol(LinkedHashMap<String, Object> content){
         super(EntityType.PROTOCOL, null, new SubmissionDate(new Date()), new UpdateDate(new Date()), null, content);
     }
 }

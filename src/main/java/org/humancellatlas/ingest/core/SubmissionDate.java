@@ -1,5 +1,6 @@
 package org.humancellatlas.ingest.core;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.Date;

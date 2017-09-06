@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.humancellatlas.ingest.analysis.Analysis;
 import org.humancellatlas.ingest.core.*;
 import org.humancellatlas.ingest.assay.Assay;
+import org.humancellatlas.ingest.file.File;
 import org.humancellatlas.ingest.project.Project;
 import org.humancellatlas.ingest.protocol.Protocol;
 import org.humancellatlas.ingest.sample.Sample;
@@ -32,11 +33,13 @@ public class SubmissionEnvelope extends AbstractEntity {
     private List<Analysis> analyses;
     @DBRef(lazy = true)
     private List<Protocol> protocols;
+    @DBRef(lazy = true)
+    private List<File> files;
 
     @Setter
     private SubmissionStatus submissionStatus;
 
-    public SubmissionEnvelope(Uuid uuid,
+    public SubmissionEnvelope(String uuid,
                               SubmissionDate submissionDate,
                               UpdateDate updateDate,
                               List<Project> projects,
