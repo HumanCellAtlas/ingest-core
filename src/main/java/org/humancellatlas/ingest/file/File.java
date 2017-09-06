@@ -2,10 +2,7 @@ package org.humancellatlas.ingest.file;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.humancellatlas.ingest.core.AbstractEntity;
-import org.humancellatlas.ingest.core.EntityType;
-import org.humancellatlas.ingest.core.SubmissionDate;
-import org.humancellatlas.ingest.core.UpdateDate;
+import org.humancellatlas.ingest.core.*;
 
 
 /**
@@ -16,6 +13,7 @@ import org.humancellatlas.ingest.core.UpdateDate;
 public class File extends AbstractEntity {
     private String fileName;
     private String cloudUrl;
+    private Checksums checksums;
 
     protected File(){
 
