@@ -27,4 +27,9 @@ public class Project extends MetadataDocument {
     public Project(EntityType type, String uuid, SubmissionDate submissionDate, UpdateDate updateDate, Accession accession, LinkedHashMap content) {
         super(type, uuid, submissionDate, updateDate, accession, content);
     }
+
+    @JsonCreator
+    protected Project(LinkedHashMap<String, Object> content){
+        super(EntityType.PROJECT, null, new SubmissionDate(new Date()), new UpdateDate(new Date()), null, content);
+    }
 }

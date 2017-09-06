@@ -27,4 +27,9 @@ public class Protocol extends MetadataDocument {
     public Protocol(EntityType type, String uuid, SubmissionDate submissionDate, UpdateDate updateDate, Accession accession, LinkedHashMap content) {
         super(type, uuid, submissionDate, updateDate, accession, content);
     }
+
+    @JsonCreator
+    protected Protocol(LinkedHashMap<String, Object> content){
+        super(EntityType.PROTOCOL, null, new SubmissionDate(new Date()), new UpdateDate(new Date()), null, content);
+    }
 }

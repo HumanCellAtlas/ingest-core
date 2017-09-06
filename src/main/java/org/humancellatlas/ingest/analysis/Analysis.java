@@ -27,4 +27,9 @@ public class Analysis extends MetadataDocument {
     public Analysis(EntityType type, String uuid, SubmissionDate submissionDate, UpdateDate updateDate, Accession accession, LinkedHashMap content) {
         super(type, uuid, submissionDate, updateDate, accession, content);
     }
+
+    @JsonCreator
+    protected Analysis(LinkedHashMap<String, Object> content){
+        super(EntityType.ANALYSIS, null, new SubmissionDate(new Date()), new UpdateDate(new Date()), null, content);
+    }
 }
