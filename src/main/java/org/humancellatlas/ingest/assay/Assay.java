@@ -35,11 +35,10 @@ public class Assay extends MetadataDocument {
     private final @DBRef List<File> files;
 
     protected Assay() {
-        super(EntityType.ASSAY,
-              null,
+        super(EntityType.ASSAY, new Uuid(),
               new SubmissionDate(new Date()),
               new UpdateDate(new Date()),
-              new ArrayList<>(), null,
+              new ArrayList<>(), new Accession(),
               ValidationState.DRAFT,
               null,
               null);
@@ -71,12 +70,10 @@ public class Assay extends MetadataDocument {
 
     @JsonCreator
     public Assay(Object content) {
-        this(EntityType.ASSAY,
-             null,
+        this(EntityType.ASSAY, new Uuid(),
              new SubmissionDate(new Date()),
              new UpdateDate(new Date()),
-             new ArrayList<>(),
-             null,
+             new ArrayList<>(), new Accession(),
              ValidationState.DRAFT, new ArrayList<>(),
              new ArrayList<>(),
              new ArrayList<>(),

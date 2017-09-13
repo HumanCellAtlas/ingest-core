@@ -28,11 +28,10 @@ public class File extends MetadataDocument {
     private Checksums checksums;
 
     protected File() {
-        super(EntityType.FILE,
-              null,
+        super(EntityType.FILE, new Uuid(),
               new SubmissionDate(new Date()),
               new UpdateDate(new Date()),
-              new ArrayList<>(), null,
+              new ArrayList<>(), new Accession(),
               ValidationState.DRAFT,
               null,
               null
@@ -63,12 +62,10 @@ public class File extends MetadataDocument {
     @JsonCreator
     protected File(@JsonProperty("fileName") String fileName,
                    @JsonProperty("content") Object content) {
-        this(EntityType.FILE,
-             null,
+        this(EntityType.FILE, new Uuid(),
              new SubmissionDate(new Date()),
              new UpdateDate(new Date()),
-             new ArrayList<>(),
-             null,
+             new ArrayList<>(), new Accession(),
              ValidationState.DRAFT,
              fileName,
              "",

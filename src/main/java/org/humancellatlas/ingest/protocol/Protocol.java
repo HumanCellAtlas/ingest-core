@@ -25,11 +25,10 @@ import java.util.List;
 @Getter
 public class Protocol extends MetadataDocument {
     protected Protocol() {
-        super(EntityType.PROTOCOL,
-              null,
+        super(EntityType.PROTOCOL, new Uuid(),
               new SubmissionDate(new Date()),
               new UpdateDate(new Date()),
-              new ArrayList<>(), null,
+              new ArrayList<>(), new Accession(),
               ValidationState.DRAFT,
               null,
               null);
@@ -48,12 +47,10 @@ public class Protocol extends MetadataDocument {
 
     @JsonCreator
     public Protocol(Object content) {
-        this(EntityType.PROTOCOL,
-             null,
+        this(EntityType.PROTOCOL, new Uuid(),
              new SubmissionDate(new Date()),
              new UpdateDate(new Date()),
-             new ArrayList<>(),
-             null,
+             new ArrayList<>(), new Accession(),
              ValidationState.DRAFT, null,
              content
         );

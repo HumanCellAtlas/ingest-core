@@ -25,12 +25,11 @@ import java.util.List;
 @Getter
 public class Project extends MetadataDocument {
     protected Project() {
-        super(EntityType.PROJECT,
-              null,
+        super(EntityType.PROJECT, new Uuid(),
               new SubmissionDate(new Date()),
               new UpdateDate(new Date()),
               new ArrayList<>(),
-              null,
+              new Accession(),
               ValidationState.DRAFT,
               null,
               null);
@@ -50,12 +49,11 @@ public class Project extends MetadataDocument {
 
     @JsonCreator
     public Project(Object content) {
-        this(EntityType.PROJECT,
-             null,
+        this(EntityType.PROJECT, new Uuid(),
              new SubmissionDate(new Date()),
              new UpdateDate(new Date()),
              new ArrayList<>(),
-             null,
+             new Accession(),
              ValidationState.DRAFT, null,
              null);
     }
