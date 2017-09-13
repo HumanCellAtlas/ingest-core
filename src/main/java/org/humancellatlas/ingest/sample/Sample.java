@@ -32,12 +32,11 @@ public class Sample extends MetadataDocument {
     private final @DBRef List<Protocol> protocols;
 
     protected Sample() {
-        super(EntityType.SAMPLE,
-              null,
+        super(EntityType.SAMPLE, new Uuid(),
               new SubmissionDate(new Date()),
               new UpdateDate(new Date()),
               new ArrayList<>(),
-              null,
+                new Accession(),
               ValidationState.DRAFT,
               null,
               null);
@@ -66,11 +65,10 @@ public class Sample extends MetadataDocument {
     @JsonCreator
     public Sample(Object content) {
         this(EntityType.SAMPLE,
-             null,
+             new Uuid(),
              new SubmissionDate(new Date()),
              new UpdateDate(new Date()),
-             new ArrayList<>(),
-             null,
+             new ArrayList<>(), new Accession(),
              ValidationState.DRAFT, new ArrayList<>(),
              new ArrayList<>(),
              new ArrayList<>(),

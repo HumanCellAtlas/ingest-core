@@ -20,7 +20,7 @@ import java.util.List;
 @Getter
 public abstract class MetadataDocument extends AbstractEntity {
     private final List<Event> events;
-    private final Accession accession;
+    private Accession accession;
     private final Object content;
 
     private @DBRef SubmissionEnvelope submissionEnvelope;

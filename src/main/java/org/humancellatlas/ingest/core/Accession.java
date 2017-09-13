@@ -12,7 +12,7 @@ import lombok.Data;
 public class Accession {
     private String number;
 
-    protected Accession() {
+    public Accession() {
         this.number = null;
     }
 
