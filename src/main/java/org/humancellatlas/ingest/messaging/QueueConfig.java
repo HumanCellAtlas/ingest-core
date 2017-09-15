@@ -1,6 +1,5 @@
 package org.humancellatlas.ingest.messaging;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -9,14 +8,9 @@ import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -37,9 +31,13 @@ public class QueueConfig implements RabbitListenerConfigurer {
 
     @Bean FanoutExchange fileStagedExchange() { return new FanoutExchange(Constants.Exchanges.FILE_STAGED_FANOUT); }
 
+    @Bean Queue queueEnvelopeCreated() { return new Queue(Constants.Queues.ENVELOPE_CREATED, false); }
+
+    @Bean FanoutExchange envelopeCreatedExchange() { return new FanoutExchange(Constants.Exchanges.ENVELOPE_CREATED_FANOUT); }
+
     @Bean Queue queueEnvelopeSubmitted() { return new Queue(Constants.Queues.ENVELOPE_SUBMITTED, false); }
 
-    @Bean FanoutExchange envelopeExchange() { return new FanoutExchange(Constants.Exchanges.ENVELOPE_FANOUT); }
+    @Bean FanoutExchange envelopeSubmittedExchange() { return new FanoutExchange(Constants.Exchanges.ENVELOPE_SUBMITTED_FANOUT); }
 
     @Bean Queue queueValidationRequired() { return new Queue(Constants.Queues.VALIDATION_REQUIRED, false); }
 
@@ -59,10 +57,14 @@ public class QueueConfig implements RabbitListenerConfigurer {
         return BindingBuilder.bind(queueFileUpdate).to(fileExchange);
     }
 
+    @Bean Binding bindingCreation(Queue queueEnvelopeCreated,
+                                  FanoutExchange envelopeCreatedExchange) {
+        return BindingBuilder.bind(queueEnvelopeCreated).to(envelopeCreatedExchange);
+    }
+
     @Bean Binding bindingSubmission(Queue queueEnvelopeSubmitted,
-                                    FanoutExchange envelopeExchange) {
-        return BindingBuilder.bind(queueEnvelopeSubmitted)
-                .to(envelopeExchange);
+                                    FanoutExchange envelopeSubmittedExchange) {
+        return BindingBuilder.bind(queueEnvelopeSubmitted).to(envelopeSubmittedExchange);
     }
 
     @Bean Binding bindingValidation(Queue queueValidationRequired, FanoutExchange validationExchange) {

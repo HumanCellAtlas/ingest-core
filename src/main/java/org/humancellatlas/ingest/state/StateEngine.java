@@ -154,7 +154,7 @@ public class StateEngine {
                         SubmissionEnvelopeMessageBuilder.using(mappings, config).messageFor(submissionEnvelope).build();
 
                 getRabbitMessagingTemplate().convertAndSend(
-                        Constants.Exchanges.ENVELOPE_FANOUT,
+                        Constants.Exchanges.ENVELOPE_SUBMITTED_FANOUT,
                         "",
                         submissionMessage);
                 break;
