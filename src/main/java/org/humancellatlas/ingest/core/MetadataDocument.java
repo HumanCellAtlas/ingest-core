@@ -2,6 +2,7 @@ package org.humancellatlas.ingest.core;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.humancellatlas.ingest.core.web.ValidationErrors;
 import org.humancellatlas.ingest.state.InvalidMetadataDocumentStateException;
 import org.humancellatlas.ingest.state.ValidationState;
 import org.humancellatlas.ingest.submission.SubmissionEnvelope;
@@ -27,6 +28,7 @@ public abstract class MetadataDocument extends AbstractEntity {
 
     private @Setter Accession accession;
     private @Setter ValidationState validationState;
+    private @Setter List<Object> validationErrors;
 
     private static final Logger log = LoggerFactory.getLogger(SubmissionEnvelope.class);
 
