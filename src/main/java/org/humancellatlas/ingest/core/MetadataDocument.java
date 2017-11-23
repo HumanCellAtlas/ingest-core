@@ -2,7 +2,6 @@ package org.humancellatlas.ingest.core;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.humancellatlas.ingest.core.web.ValidationErrors;
 import org.humancellatlas.ingest.state.InvalidMetadataDocumentStateException;
 import org.humancellatlas.ingest.state.ValidationState;
 import org.humancellatlas.ingest.submission.SubmissionEnvelope;
