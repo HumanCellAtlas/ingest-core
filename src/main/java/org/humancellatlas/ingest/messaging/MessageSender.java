@@ -42,12 +42,12 @@ public class MessageSender {
 
     @Scheduled(fixedDelay = 1000)
     private void sendValidationMessages(){
-        sendFromQueue(this.validationMessageBatch, 40);
+        sendFromQueue(this.validationMessageBatch, 5);
     }
 
     @Scheduled(fixedDelay = 1000)
     private void sendAccessionMessages(){
-        sendFromQueue(this.accessionMessageBatch, 20);
+        sendFromQueue(this.accessionMessageBatch, 1);
     }
 
     @Scheduled(fixedDelay = 1000)
