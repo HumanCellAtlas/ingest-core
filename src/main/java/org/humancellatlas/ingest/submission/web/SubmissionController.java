@@ -30,10 +30,18 @@ import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.Arrays;
+import java.util.HashSet;
+
+import static org.springframework.http.HttpMethod.*;
 
 /**
  * Spring controller that will handle submission events on a {@link SubmissionEnvelope}
@@ -106,8 +114,26 @@ public class SubmissionController {
         Pageable pageable,
         final PersistentEntityResourceAssembler resourceAssembler) {
         Page<Process> processes = getProcessRepository().findBySubmissionEnvelopesContaining(submissionEnvelope, pageable);
-        return ResponseEntity.ok(getPagedResourcesAssembler().toResource(processes
-            , resourceAssembler));
+        return ResponseEntity.ok(getPagedResourcesAssembler().toResource(processes, resourceAssembler));
+    }
+
+
+    @RequestMapping(path = "/submissionEnvelopes/{sub_id}" + Links.ANALYSES_URL, method = {RequestMethod.HEAD, RequestMethod.OPTIONS})
+    ResponseEntity<?> allowedAnalysisMethods(@PathVariable("sub_id") SubmissionEnvelope submissionEnvelope) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAllow(new HashSet<>(Arrays.asList(HEAD, OPTIONS, POST)));
+        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+    }
+
+    @RequestMapping(path = "/submissionEnvelopes/{sub_id}" + Links.ANALYSES_URL, method = RequestMethod.POST)
+    ResponseEntity<?> createAnalysis(@PathVariable("sub_id") SubmissionEnvelope submissionEnvelope,
+                                     @RequestBody Object analysisContent,
+                                     Pageable pageable,
+                                     final PersistentEntityResourceAssembler resourceAssembler) {
+        Process analysisProcess = new Process(analysisContent);
+        analysisProcess.addToSubmissionEnvelope(submissionEnvelope);
+        analysisProcess = getProcessRepository().save(analysisProcess);
+        return ResponseEntity.ok(resourceAssembler.toFullResource(analysisProcess));
     }
 
     @RequestMapping(path = "/submissionEnvelopes/{sub_id}/biomaterials/{state}", method = RequestMethod.GET)
