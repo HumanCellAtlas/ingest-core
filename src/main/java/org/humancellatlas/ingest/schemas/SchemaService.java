@@ -33,44 +33,31 @@ public class SchemaService {
                                      String concreteEntity,
                                      String domainEntity,
                                      String subDomainEntity,
-                                     String schemaVersion,
                                      Pageable pageable){
-        return schemaRepository.findByHighLevelEntityLikeAndConcreteEntityLikeAndDomainEntityLikeAndSubDomainEntityLikeAndSchemaVersionLikeOrderBySchemaVersionDesc(highLevelEntity,
-                                                                                                                                            concreteEntity,
-                                                                                                                                            domainEntity,
-                                                                                                                                            subDomainEntity,
-                                                                                                                                            schemaVersion,
-                                                                                                                                            pageable);
-    }
-
-    public List<Schema> getLatestSchemas() {
-        Set<LatestSchema> latestSchemas = new LinkedHashSet<>();
-
-        schemaRepository.findAllByOrderBySchemaVersionDesc()
-                        .forEach(schema -> latestSchemas.add(new LatestSchema(schema)));
-
-        return latestSchemas.stream()
-                            .map(LatestSchema::getSchema)
-                            .collect(Collectors.toList());
+        return schemaRepository.findByHighLevelEntityLikeAndConcreteEntityLikeAndDomainEntityLikeAndSubDomainEntityLike(highLevelEntity,
+                                                                                                                        concreteEntity,
+                                                                                                                        domainEntity,
+                                                                                                                        subDomainEntity,
+                                                                                                                        pageable);
     }
 
     @Scheduled(fixedDelay = EVERY_24_HOURS)
     public void updateSchemasCollection() {
+        Set<DistinctSchema> distinctSchemas = new LinkedHashSet<>();
+
         schemaScraper.getAllSchemaURIs(URI.create(environment.getProperty("SCHEMA_BASE_URI"))).stream()
                      .filter(schemaUri -> ! schemaUri.toString().contains("index.html"))
                      .forEach(schemaUri -> {
-                         Schema schemaDocument = schemaDescriptionFromSchemaUri(schemaUri);
-
-                         // generate a uuid from the schema namespace
-                         UUID schemaUuid = UUID.nameUUIDFromBytes(schemaUri.toString().getBytes());
-                         schemaDocument.setUuid(new Uuid(schemaUuid.toString()));
-
-                         // delete/update matching schemas
-                         Collection<Schema> matchingSchemas = schemaRepository.findByUuidEquals(new Uuid(schemaUuid.toString()));
-                         schemaRepository.delete(matchingSchemas);
-
-                         schemaRepository.save(schemaDocument);
+                         Schema schema = schemaDescriptionFromSchemaUri(schemaUri);
+                         DistinctSchema distinctSchemaDocument = new DistinctSchema(schema);
+                         distinctSchemas.add(distinctSchemaDocument);
+                         distinctSchemaDocument.getSchema().addVersion(schemaVersionFromSchemaUri(schemaUri),
+                                                                       schemaFullUriFromSchemaUri(schemaUri));
                      });
+
+        persistSchemas(distinctSchemas.stream()
+                                      .map(DistinctSchema::getSchema)
+                                      .collect(Collectors.toList()));
     }
 
     public Collection<Schema> schemaDescriptionFromSchemaUris(Collection<URI> schemaUris) {
@@ -79,44 +66,74 @@ public class SchemaService {
                          .collect(Collectors.toList());
     }
 
-    private Schema schemaDescriptionFromSchemaUri(URI schemaUri) {
-        String[] splitString = schemaUri.toString().split("/");
-        String schemaFullUri = environment.getProperty("SCHEMA_BASE_URI") + schemaUri;
+    private Schema schemaDescriptionFromSchemaUri(URI relativeSchemaUri) {
+        String[] splitString = relativeSchemaUri.toString().split("/");
+        String schemaFullUri = schemaFullUriFromSchemaUri(relativeSchemaUri);
 
+        Schema schema;
         if(splitString.length == 3) { // then this is a bundle schema
-            return new Schema(splitString[0], splitString[1], "", "", splitString[2], schemaFullUri);
+            schema = new Schema(splitString[0], splitString[1], "", "");
         } else if(splitString.length == 4) {
-            return new Schema(splitString[0], splitString[2], splitString[1], "", splitString[3], schemaFullUri);
+            schema = new Schema(splitString[0], splitString[2], splitString[1], "");
         } else if(splitString.length == 5) {
-            return new Schema(splitString[0], splitString[3], splitString[1], splitString[2], splitString[4], schemaFullUri);
+            schema = new Schema(splitString[0], splitString[3], splitString[1], splitString[2]);
         } else {
             throw new SchemaScrapeException("Couldn't construct a Schema document from URI: " + schemaFullUri);
         }
+
+        // add the version to the schema
+        String schemaVersion = schemaVersionFromSchemaUri(relativeSchemaUri);
+        schema.addVersion(schemaVersion, schemaFullUri);
+        return schema;
+    }
+
+    private String schemaFullUriFromSchemaUri(URI relativeSchemaUri) {
+        return environment.getProperty("SCHEMA_BASE_URI") + relativeSchemaUri;
+    }
+
+    private String schemaVersionFromSchemaUri (URI relativeSchemaUri) {
+        String[] splitString = relativeSchemaUri.toString().split("/");
+        // the version is always the 2nd last component of the schema URI
+        return splitString[splitString.length - 2];
+    }
+
+    private void persistSchemas(Collection<Schema> schemas) {
+        // generate a uuid from the schema's attributes, excluding the version
+        schemas.forEach(schema -> {
+            UUID schemaUuid = schema.genererateUuid();
+            schema.setUuid(new Uuid(schemaUuid.toString()));
+
+            // delete/update matching schemas
+            Collection<Schema> matchingSchemas = schemaRepository.findByUuidEquals(new Uuid(schemaUuid.toString()));
+            schemaRepository.delete(matchingSchemas);
+
+            schemaRepository.save(schema);
+        });
     }
 
     /**
      *
      * A wrapper for Schema documents used to define a looser equals()/hashCode()
      * to determine equivalence of Schemas based only on a Schema's high level entity,
-     * type, etc.
+     * type, etc. and ignoring the version
      *
      */
-    private class LatestSchema {
+    private class DistinctSchema {
         @Getter
         private final Schema schema;
 
-        LatestSchema(Schema schema) {
+        DistinctSchema(Schema schema) {
             this.schema = schema;
         }
 
         @Override
         public boolean equals(Object to) {
             if (to == this) return true;
-            if (!(to instanceof LatestSchema)) {
+            if (!(to instanceof DistinctSchema)) {
                 return false;
             }
 
-            LatestSchema schema = (LatestSchema) to;
+            DistinctSchema schema = (DistinctSchema) to;
             return schema.hashCode() == this.hashCode();
         }
 

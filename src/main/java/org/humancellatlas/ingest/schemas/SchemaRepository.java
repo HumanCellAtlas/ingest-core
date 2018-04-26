@@ -32,17 +32,10 @@ public interface SchemaRepository extends MongoRepository<Schema, String>{
     @RestResource(exported = false)
     List<Schema> findByUuidEquals(Uuid uuid);
 
-    @RestResource
-    Page<Schema> findBySchemaVersionAfter(@Param("schema-version-range") String schemaVersionRange, Pageable pageable);
-
     @RestResource(exported = false)
-    Page<Schema> findByHighLevelEntityLikeAndConcreteEntityLikeAndDomainEntityLikeAndSubDomainEntityLikeAndSchemaVersionLikeOrderBySchemaVersionDesc(@Param("high-level-entity") String highLevelEntity,
-                                                                                                                             @Param("concrete-entity") String concreteEntity,
-                                                                                                                             @Param("domain-entity") String domainEntity,
-                                                                                                                             @Param("sub-domain-entity") String subDomainEntity,
-                                                                                                                             @Param("schema-version") String schemaVersion,
-                                                                                                                             Pageable pageable);
-
-    @RestResource
-    <S extends Schema> Stream<S> findAllByOrderBySchemaVersionDesc();
+    Page<Schema> findByHighLevelEntityLikeAndConcreteEntityLikeAndDomainEntityLikeAndSubDomainEntityLike(@Param("high-level-entity") String highLevelEntity,
+                                                                                                         @Param("concrete-entity") String concreteEntity,
+                                                                                                         @Param("domain-entity") String domainEntity,
+                                                                                                         @Param("sub-domain-entity") String subDomainEntity,
+                                                                                                         Pageable pageable);
 }

@@ -1,13 +1,13 @@
 package org.humancellatlas.ingest.schemas;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.humancellatlas.ingest.core.AbstractEntity;
+
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by rolando on 18/04/2018.
@@ -16,11 +16,23 @@ import org.humancellatlas.ingest.core.AbstractEntity;
 @Getter
 public class Schema extends AbstractEntity {
     private final String highLevelEntity;
-    private final String schemaVersion;
     private final String domainEntity;
     private final String subDomainEntity;
     private final String concreteEntity;
+    @Getter(AccessLevel.NONE)
+    private final List<VersionMap> versionMaps = new ArrayList<>();
 
     @JsonIgnore
-    private final String schemaUri;
+    public void addVersion(String schemaVersion, String schemaUri) {
+        this.versionMaps.add(new VersionMap(schemaVersion, schemaUri));
+    }
+
+    @JsonIgnore
+    public UUID genererateUuid() {
+        return UUID.nameUUIDFromBytes((highLevelEntity + domainEntity + subDomainEntity + concreteEntity).getBytes());
+    }
+
+    public List<VersionMap> getVersionMaps() {
+        return new CopyOnWriteArrayList<>(versionMaps);
+    }
 }

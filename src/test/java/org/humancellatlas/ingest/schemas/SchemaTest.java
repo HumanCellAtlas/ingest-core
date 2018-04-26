@@ -1,18 +1,23 @@
 package org.humancellatlas.ingest.schemas;
 
+import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.humancellatlas.ingest.schemas.schemascraper.SchemaScraper;
 import org.humancellatlas.ingest.schemas.schemascraper.impl.S3BucketSchemaScraper;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.mock.env.MockEnvironment;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.io.File;
 import java.net.URI;
@@ -20,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.mockito.Mockito.*;
@@ -30,10 +36,10 @@ import static org.mockito.Mockito.*;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ContextConfiguration(loader=AnnotationConfigContextLoader.class)
 public class SchemaTest {
     @Autowired SchemaService schemaService;
-
-    @MockBean SchemaRepository schemaRepository;
+    @Autowired SchemaRepository schemaRepository;
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(8088);
@@ -139,32 +145,32 @@ public class SchemaTest {
     }
 
     @Test
-    public void testGetLatestSchemas() throws Exception {
-        Schema mockSchemaA = new Schema("mockHighLevel-A", "2.0","mockDomain-A","mockSubdomain-A","mockConcrete-A", "mock.io/mock-schema-a");
-        Schema mockSchemaB = new Schema("mockHighLevel-B", "1.9","mockDomain-B","mockSubdomain-B","mockConcrete-B", "mock.io/mock-schema-a");
-        Schema mockSchemaOldA = new Schema("mockHighLevel-A", "1.9","mockDomain-A","mockSubdomain-A","mockConcrete-A", "mock.io/mock-schema-duplicate-a");
+    public void testUpdateSchemasCollection() throws Exception {
+        // pre-given
 
-        doReturn(Arrays.stream(new Schema[] {mockSchemaA, mockSchemaB, mockSchemaOldA}))
-                .when(schemaRepository).findAllByOrderBySchemaVersionDesc();
+        stubFor(
+                get(urlEqualTo("/"))
+                        .willReturn(aResponse()
+                                            .withStatus(200)
+                                            .withHeader("Content-Type", "application/xml")
+                                            .withBody(new String(Files.readAllBytes(Paths.get(new File(".").getAbsolutePath() + "/src/test/resources/testfiles/TestBucketListing.xml"))))));
 
-        Collection<Schema> latestSchemas = schemaService.getLatestSchemas();
-        assert latestSchemas.size() == 2;
-        latestSchemas.forEach(schema -> {
-            if(schema.getSchemaUri().equals("mock.io/mock-schema-duplicate-a")){
-                assert false;
-            }
-        });
-        assert true;
+        schemaService.updateSchemasCollection();
+        // we know that there are 41 distinct schemas in the test file
+        verify(schemaRepository, times(41)).save(any(Schema.class));
+
     }
 
+
     @Configuration
-    class MockConfiguration {
+    static class ContextConfiguration {
         @Autowired SchemaScraper schemaScraper;
-        @Autowired MockEnvironment mockEnvironment;
+        @Autowired Environment environment;
+        @Autowired SchemaRepository schemaRepository;
 
         @Bean
         SchemaService schemaService() {
-            return new SchemaService(schemaRepository, schemaScraper, mockEnvironment);
+            return new SchemaService(schemaRepository, schemaScraper, environment);
         }
 
         @Bean
@@ -172,6 +178,16 @@ public class SchemaTest {
             return new S3BucketSchemaScraper();
         }
 
+        @Bean Environment environment() {
+            MockEnvironment mockEnvironment = new MockEnvironment();
+            mockEnvironment.setProperty("SCHEMA_BASE_URI", "http://localhost:8088");
+            return mockEnvironment;
+        }
+
+        @Bean
+        SchemaRepository schemaRepository() {
+            return Mockito.mock(SchemaRepository.class);
+        }
     }
 
 }
