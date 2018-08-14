@@ -61,6 +61,7 @@ public class SubmissionEnvelopeResourceProcessor implements ResourceProcessor<Re
                 .withRel(Links.ASSAYS_REL);
     }
 
+    //TODO this seems to be dead now
     private Link getAnalysesLink(SubmissionEnvelope submissionEnvelope) {
         return entityLinks.linkForSingleResource(submissionEnvelope)
                           .slash(Links.ANALYSES_URL)
