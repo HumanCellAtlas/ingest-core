@@ -62,7 +62,11 @@ services:
       - "upload-service:upload"
   upload-service:
     image: humancellatlas/mock-upload-service
+    environment:
+      - RABBITMQ_HOST=mq
     ports:
       - "8888:8080"
+    links:
+      - "rabbitmq:mq"
 networks:
   default:
