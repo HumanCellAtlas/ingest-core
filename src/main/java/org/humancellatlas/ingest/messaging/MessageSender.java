@@ -65,7 +65,7 @@ public class MessageSender {
     @PostConstruct
     private void initiateSending() {
         Arrays.stream(MessageBuffer.values())
-              .forEach(buffer -> scheduler.scheduleWithFixedDelay(new BufferSender(buffer, rabbitMessagingTemplate),
+              .forEach(buffer -> scheduler.scheduleAtFixedRate(new BufferSender(buffer, rabbitMessagingTemplate),
                                                                   0,
                                                                   buffer.getDelayMillis(),
                                                                   TimeUnit.MILLISECONDS));
