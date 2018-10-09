@@ -16,9 +16,19 @@ ENV RABBIT_HOST=localhost
 ENV RABBIT_PORT=5672
 ENV SCHEMA_BASE_URI=https://schema.humancellatlas.org
 
-#JMX related variables
+# JMX related variables
 ENV JMX_PORT=9091
 ENV RMI_HOSTNAME=localhost
+
+# metrics variables
+ENV METRICS_PREFIX=ingest_core
+ENV METRICS_DIR=/var/metrics
+ENV METRICS_SCHEDULE="*/1 * * * *"
+
+RUN mkdir metrics
+ADD metrics ./metrics
+RUN chmod +x metrics/* && \
+    ./metrics/init_metrics.sh
 
 ADD gradle ./gradle
 ADD src ./src

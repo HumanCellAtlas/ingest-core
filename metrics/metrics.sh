@@ -20,7 +20,7 @@ function log_fd_count {
     mkdir -p ${METRICS_DIR}
   fi
   ENTRY="${METRICS_PREFIX}_open_fd $(count_fd) $(date +%s)"
-  echo ${ENTRY} > ${METRICS_DIR}/fd_count.prom
+  echo ${ENTRY} 1> ${METRICS_DIR}/fd_count.prom
 }
 
 log_fd_count
