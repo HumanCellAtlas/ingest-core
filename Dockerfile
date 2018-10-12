@@ -15,6 +15,7 @@ ENV MONGO_URI=mongodb://localhost:27017/admin
 ENV RABBIT_HOST=localhost
 ENV RABBIT_PORT=5672
 ENV SCHEMA_BASE_URI=https://schema.humancellatlas.org
+ENV SERVER_WORKER_THREADS=800
 
 #JMX related variables
 ENV JMX_PORT=9091
