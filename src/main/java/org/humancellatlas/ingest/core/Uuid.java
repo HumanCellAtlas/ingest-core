@@ -2,6 +2,7 @@ package org.humancellatlas.ingest.core;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Data;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.util.UUID;
 
@@ -13,6 +14,8 @@ import java.util.UUID;
  */
 @Data
 public class Uuid {
+
+    @Indexed
     private UUID uuid;
 
     @JsonCreator

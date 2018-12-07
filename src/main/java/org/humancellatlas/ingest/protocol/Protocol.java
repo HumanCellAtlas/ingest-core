@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.humancellatlas.ingest.core.EntityType;
 import org.humancellatlas.ingest.core.MetadataDocument;
 import org.humancellatlas.ingest.submission.SubmissionEnvelope;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * Javadocs go here!
@@ -13,6 +14,7 @@ import org.humancellatlas.ingest.submission.SubmissionEnvelope;
  * @date 30/08/17
  */
 @Getter
+@Document
 public class Protocol extends MetadataDocument {
 
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)

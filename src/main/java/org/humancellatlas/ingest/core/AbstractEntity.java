@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.joda.time.DateTime;
 import org.springframework.data.annotation.*;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.hateoas.Identifiable;
 
 import java.util.ArrayList;

@@ -8,6 +8,7 @@ import org.humancellatlas.ingest.core.MetadataDocument;
 import org.humancellatlas.ingest.project.Project;
 import org.humancellatlas.ingest.protocol.Protocol;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.rest.core.annotation.RestResource;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.List;
  * Created by rolando on 16/02/2018.
  */
 @Getter
+@Document
 public class Process extends MetadataDocument {
 
     @RestResource
