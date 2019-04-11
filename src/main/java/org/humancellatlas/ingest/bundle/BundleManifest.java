@@ -23,8 +23,8 @@ public class BundleManifest implements Identifiable<String> {
 
     @Indexed
     private final String bundleUuid;
-
     @Indexed
+    private final String bundleVersion;
     private final String envelopeUuid;
 
     private final List<String> dataFiles;

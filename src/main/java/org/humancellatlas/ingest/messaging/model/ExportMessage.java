@@ -3,9 +3,14 @@ package org.humancellatlas.ingest.messaging.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.UUID;
+
 @Getter
 @AllArgsConstructor
 public class ExportMessage implements AbstractEntityMessage {
+    private final UUID bundleUuid;
+    private final String versionTimestamp;
+
     private final MessageProtocol messageProtocol;
     private final String documentId;
     private final String documentUuid;
