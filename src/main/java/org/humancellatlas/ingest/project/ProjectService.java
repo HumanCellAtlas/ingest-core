@@ -32,7 +32,6 @@ public class ProjectService {
     public Project addProjectToSubmissionEnvelope(SubmissionEnvelope submissionEnvelope, Project project) {
         project.setIsUpdate(submissionEnvelope.getIsUpdate());
         project.addToSubmissionEnvelope(submissionEnvelope);
-        project.setUuid(Uuid.newUuid());
         return getProjectRepository().save(project);
     }
 }

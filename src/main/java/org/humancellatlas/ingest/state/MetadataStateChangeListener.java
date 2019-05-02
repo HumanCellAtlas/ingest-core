@@ -4,12 +4,14 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.humancellatlas.ingest.core.MetadataDocument;
+import org.humancellatlas.ingest.core.Uuid;
 import org.humancellatlas.ingest.messaging.MessageRouter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.AfterSaveEvent;
+import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
 import org.springframework.stereotype.Component;
 
 /**
@@ -36,4 +38,12 @@ public class MetadataStateChangeListener extends AbstractMongoEventListener<Meta
         messageRouter.routeValidationMessageFor(document);
     }
 
+    @Override
+    public void onBeforeSave(BeforeSaveEvent<MetadataDocument> event) {
+        MetadataDocument document = event.getSource();
+        if(document.getUuid() == null){
+            document.setUuid(Uuid.newUuid());
+        }
+        super.onBeforeSave(event);
+    }
 }
