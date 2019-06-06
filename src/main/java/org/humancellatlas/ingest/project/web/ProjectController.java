@@ -9,6 +9,7 @@ import org.humancellatlas.ingest.project.Project;
 import org.humancellatlas.ingest.project.ProjectService;
 import org.humancellatlas.ingest.submission.SubmissionEnvelope;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
@@ -77,9 +78,8 @@ public class ProjectController {
     ResponseEntity<?> findAllBundles( @PathVariable("id") Project project,
                                           Pageable pageable,
                                           final PersistentEntityResourceAssembler resourceAssembler) {
-        Page<BundleManifest> bundleManifests = projectService.findAllBundlesByProject(project, pageable);
+        Page<BundleManifest> bundleManifests = projectService.findBundlesByProject(project, null, pageable);
         return ResponseEntity.ok(pagedResourcesAssembler.toResource(bundleManifests, resourceAssembler));
     }
-
 
 }
