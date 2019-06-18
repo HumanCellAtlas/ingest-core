@@ -8,9 +8,7 @@ image:
 	docker build -t $(IMAGE) .
 
 push:
-	eval $(aws ecr get-login --no-include-email --region us-east-1 | tee)
-	docker tag $(IMAGE) 861229788715.dkr.ecr.us-east-1.amazonaws.com/${REPO}
-	docker push 861229788715.dkr.ecr.us-east-1.amazonaws.com/${REPO}
+	./push_image.sh $(IMAGE) $(REPO)
 
 .PHONY: image publish
 
