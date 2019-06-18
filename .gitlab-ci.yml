@@ -6,7 +6,7 @@ stages:
 deploy:
   stage: deploy
   script:
-    - pip install aws
+    - pip install awscli
     - make image
     - make push
   only:
