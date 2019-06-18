@@ -6,7 +6,7 @@ stages:
 deploy:
   stage: deploy
   script:
-    - pip install awscli
+    - pip install awscli --user --upgrade
     - make image
     - make push
   only:
