@@ -1,20 +1,13 @@
-image: rhiananthony/dsde-toolbox:gitlab-runner-11.4.4
+image: humancellatlas/metrics-build-box
 
 stages:
   - deploy
 
-deploy_lira_dev:
-  tags:
-    - green
+deploy:
   stage: deploy
   script:
-    - export ENVIRONMENT=${CI_BUILD_REF_NAME}
-    - bash gitlab/deploy_lira.sh
-
-deploy_falcon_dev:
-  tags:
-    - green
-  stage: deploy
-  script:
-    - export ENVIRONMENT=${CI_BUILD_REF_NAME}
-    - bash gitlab/deploy_falcon.sh
+    - pip install aws
+    - make image
+    - make push
+  only:
+    - f2f-hackatho-image-build
