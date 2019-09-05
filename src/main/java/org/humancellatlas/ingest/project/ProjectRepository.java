@@ -7,10 +7,12 @@ import org.humancellatlas.ingest.submission.SubmissionEnvelope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -43,8 +45,12 @@ public interface ProjectRepository extends MongoRepository<Project, String> , Pr
                                                                                @Param("state") ValidationState state,
                                                                                Pageable pageable);
 
+    @Query(value = "{'content.project_core.project_title': {$nin: ?0}}")
+    @RestResource()
+    Page<Project> findAllExcludingTitles(Collection<String> excludedTitles, Pageable pageable);
+
+
     long countByUser(String user);
-    
     
     Page<Project> findByContent(List<MetadataCriteria> criteria, Pageable pageable);
 }
