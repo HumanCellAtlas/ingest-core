@@ -48,6 +48,10 @@ public class MessageSender {
         rabbitMessagingTemplate.convertAndSend(exchange, routingKey, payload);
     }
 
+    public void queueSubmissionNeedsProcessingMessage(String exchange, String routingKey, SubmissionEnvelopeMessage payload) {
+        rabbitMessagingTemplate.convertAndSend(exchange, routingKey, payload);
+    }
+
     private static HttpHeaders applicationJsonHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/json");

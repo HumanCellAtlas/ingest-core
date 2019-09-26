@@ -12,8 +12,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Service
 @RequiredArgsConstructor
@@ -27,9 +31,6 @@ public class SubmissionEnvelopeService {
 
     @NonNull
     private final MetadataUpdateService metadataUpdateService;
-
-    @NonNull
-    private final ExecutorService executorService = Executors.newFixedThreadPool(5);
 
     @NonNull
     private final SubmissionEnvelopeRepository submissionEnvelopeRepository;
@@ -51,34 +52,34 @@ public class SubmissionEnvelopeService {
     }
 
     public void handleSubmissionRequest(SubmissionEnvelope envelope) {
-        if(! envelope.getIsUpdate()) {
-            handleSubmitOriginalSubmission(envelope);
+        messageRouter.routeSubmissionRequiresProcessingMessage(envelope);
+    }
+
+    public void processSubmission(SubmissionEnvelope submissionEnvelope) {
+        if(submissionEnvelope.getIsUpdate()) {
+            processUpdateSubmission(submissionEnvelope);
         } else {
-            handleSubmitUpdateSubmission(envelope);
+            processOriginalSubmission(submissionEnvelope);
         }
     }
 
-    private void handleSubmitOriginalSubmission(SubmissionEnvelope submissionEnvelope) {
-        executorService.submit(() -> {
-            try {
-                exporter.exportBundles(submissionEnvelope);
-            }
-            catch (Exception e) {
-                log.error("Uncaught Exception exporting Bundles", e);
-            }
-        });
+    private void processOriginalSubmission(SubmissionEnvelope submissionEnvelope) {
+        try {
+            exporter.exportBundles(submissionEnvelope);
+        }
+        catch (Exception e) {
+            log.error("Uncaught Exception exporting Bundles", e);
+        }
     }
 
-    private void handleSubmitUpdateSubmission(SubmissionEnvelope submissionEnvelope) {
-        executorService.submit(() -> {
-            try {
-                metadataUpdateService.applyUpdates(submissionEnvelope);
-                exporter.updateBundles(submissionEnvelope);
-            }
-            catch (Exception e) {
-                log.error("Uncaught Exception Applying Updates or Exporting Bundles", e);
-            }
-        });
+    private void processUpdateSubmission(SubmissionEnvelope submissionEnvelope) {
+        try {
+            metadataUpdateService.applyUpdates(submissionEnvelope);
+            exporter.updateBundles(submissionEnvelope);
+        }
+        catch (Exception e) {
+            log.error("Uncaught Exception Applying Updates or Exporting Bundles", e);
+        }
     }
 
     public SubmissionEnvelope createUpdateSubmissionEnvelope() {
@@ -88,5 +89,9 @@ public class SubmissionEnvelopeService {
         SubmissionEnvelope insertedUpdateSubmissionEnvelope = submissionEnvelopeRepository.insert(updateSubmissionEnvelope);
         submissionEnvelopeCreateHandler.handleSubmissionEnvelopeCreation(updateSubmissionEnvelope);
         return insertedUpdateSubmissionEnvelope;
+    }
+
+    public Optional<SubmissionEnvelope> getSubmissionById(String submissionId) {
+        return submissionEnvelopeRepository.findById(submissionId);
     }
 }
