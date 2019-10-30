@@ -7,7 +7,7 @@ import org.bson.Document;
 import java.util.ArrayList;
 import java.util.List;
 
-class MongoHelper {
+class MongoVersionHelper {
     private static ServerVersion getServerVersionFromString(String version) {
         List<Integer> numberList = new ArrayList<>();
         for(String number : version.split("\\.")) {
@@ -57,6 +57,6 @@ class MongoHelper {
     }
 
     static void incrementFeatureCompatibility(MongoDatabase db, ServerVersion serverVersion) {
-        db.runCommand( new Document("setFeatureCompatibilityVersion", MongoHelper.getMajorMinorString(serverVersion)));
+        db.runCommand( new Document("setFeatureCompatibilityVersion", MongoVersionHelper.getMajorMinorString(serverVersion)));
     }
 }

@@ -1,4 +1,4 @@
-package org.humancellatlas.ingest.core;
+package org.humancellatlas.ingest.config;
 
 import com.github.mongobee.Mongobee;
 import org.springframework.beans.factory.annotation.Value;

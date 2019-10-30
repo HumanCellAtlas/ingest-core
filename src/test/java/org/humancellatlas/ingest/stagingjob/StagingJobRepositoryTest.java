@@ -1,6 +1,6 @@
 package org.humancellatlas.ingest.stagingjob;
 
-import org.humancellatlas.ingest.core.MigrationConfiguration;
+import org.humancellatlas.ingest.config.MigrationConfiguration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
