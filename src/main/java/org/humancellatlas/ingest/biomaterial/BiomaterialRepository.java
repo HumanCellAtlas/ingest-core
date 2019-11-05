@@ -32,6 +32,9 @@ public interface BiomaterialRepository extends MongoRepository<Biomaterial, Stri
     @RestResource(exported = false)
     Stream<Biomaterial> findBySubmissionEnvelope(SubmissionEnvelope submissionEnvelope);
 
+    @RestResource(exported = false)
+    Long deleteBySubmissionEnvelope(SubmissionEnvelope submissionEnvelope);
+
     @RestResource(rel = "findBySubmissionAndValidationState")
     public Page<Biomaterial> findBySubmissionEnvelopeAndValidationState(@Param
             ("envelopeUri") SubmissionEnvelope submissionEnvelope, @Param("state")
