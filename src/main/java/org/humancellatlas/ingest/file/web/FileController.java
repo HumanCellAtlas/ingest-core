@@ -33,7 +33,7 @@ import java.util.UUID;
 @ExposesResourceFor(File.class)
 @RequiredArgsConstructor
 @Getter
-
+@RequestMapping
 public class FileController {
 
     @NonNull
