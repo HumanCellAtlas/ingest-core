@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,32 +30,34 @@ public interface FileRepository extends MongoRepository<File, String> {
     @RestResource(rel = "findByUuid", path = "findByUuid")
     Optional<File> findByUuidUuidAndIsUpdateFalse(@Param("uuid") UUID uuid);
 
-    @RestResource(exported = false)
-    Stream<File> findBySubmissionEnvelopesContains(SubmissionEnvelope submissionEnvelope);
-
-    @RestResource(exported = false)
-    List<File> findBySubmissionEnvelopesContaining(SubmissionEnvelope submissionEnvelope);
-
     @RestResource(rel = "findBySubmissionEnvelope")
-    Page<File> findBySubmissionEnvelopesContaining(@Param("envelopeUri") SubmissionEnvelope submissionEnvelope, Pageable pageable);
+    Page<File> findBySubmissionEnvelope(@Param("envelopeUri") SubmissionEnvelope submissionEnvelope, Pageable pageable);
 
-    List<File> findBySubmissionEnvelopesInAndFileName(SubmissionEnvelope submissionEnvelope, String fileName);
+    @RestResource(exported = false)
+    Stream<File> findBySubmissionEnvelope(SubmissionEnvelope submissionEnvelope);
+
+    @RestResource(exported = false)
+    Long deleteBySubmissionEnvelope(SubmissionEnvelope submissionEnvelope);
+
+    List<File> findBySubmissionEnvelopeAndFileName(SubmissionEnvelope submissionEnvelope, String fileName);
 
     @RestResource(rel = "findByValidationId")
     File findByValidationJobValidationId(@Param("validationId") UUID id);
 
     @RestResource(exported = false)
-    List<File> findByInputToProcessesContains(Process process);
+    Stream<File> findByInputToProcessesContains(Process process);
 
     Page<File> findByInputToProcessesContaining(Process process, Pageable pageable);
 
     @RestResource(exported = false)
-    List<File> findByDerivedByProcessesContains(Process process);
+    Stream<File> findByDerivedByProcessesContains(Process process);
 
     Page<File> findByDerivedByProcessesContaining(Process process, Pageable pageable);
 
     @RestResource(rel = "findBySubmissionAndValidationState")
-    public Page<File> findBySubmissionEnvelopesContainingAndValidationState(@Param("envelopeUri") SubmissionEnvelope submissionEnvelope,
+    public Page<File> findBySubmissionEnvelopeAndValidationState(@Param("envelopeUri") SubmissionEnvelope submissionEnvelope,
                                                                             @Param("state") ValidationState state,
                                                                             Pageable pageable);
+    @RestResource(exported = false)
+    Collection<File> findAllBySubmissionEnvelope(SubmissionEnvelope submissionEnvelope);
 }

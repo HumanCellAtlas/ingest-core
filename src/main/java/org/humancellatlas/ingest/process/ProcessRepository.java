@@ -2,6 +2,7 @@ package org.humancellatlas.ingest.process;
 
 import org.humancellatlas.ingest.bundle.BundleManifest;
 import org.humancellatlas.ingest.core.Uuid;
+import org.humancellatlas.ingest.protocol.Protocol;
 import org.humancellatlas.ingest.state.ValidationState;
 import org.humancellatlas.ingest.submission.SubmissionEnvelope;
 import org.springframework.data.domain.Page;
@@ -12,7 +13,6 @@ import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -26,21 +26,31 @@ public interface ProcessRepository extends MongoRepository<Process, String> {
     @RestResource(rel = "findByUuid", path = "findByUuid")
     Optional<Process> findByUuidUuidAndIsUpdateFalse(@Param("uuid") UUID uuid);
 
-    @RestResource(exported = false)
-    List<Process> findBySubmissionEnvelopesContaining(SubmissionEnvelope submissionEnvelope);
-
-    Page<Process> findBySubmissionEnvelopesContaining(SubmissionEnvelope submissionEnvelope,
+    Page<Process> findBySubmissionEnvelope(SubmissionEnvelope submissionEnvelope,
             Pageable pageable);
+
+    @RestResource(exported = false)
+    Stream<Process> findBySubmissionEnvelope(SubmissionEnvelope submissionEnvelope);
+
+    @RestResource(exported = false)
+    Long deleteBySubmissionEnvelope(SubmissionEnvelope submissionEnvelope);
 
     @RestResource(exported = false)
     Page<Process> findByInputBundleManifestsContaining(BundleManifest bundleManifest, Pageable pageable);
 
     @RestResource(rel = "findBySubmissionAndValidationState")
-    public Page<Process> findBySubmissionEnvelopesContainingAndValidationState(@Param
+    public Page<Process> findBySubmissionEnvelopeAndValidationState(@Param
             ("envelopeUri") SubmissionEnvelope submissionEnvelope, @Param("state")
             ValidationState state, Pageable pageable);
 
     @RestResource(exported = false)
     public Stream<Process> findAllByIdIn(Collection<String> ids);
 
+    @RestResource(exported = false)
+    Collection<Process> findAllBySubmissionEnvelope(SubmissionEnvelope submissionEnvelope);
+
+    @RestResource(exported = false)
+    Stream<Process> findByProtocolsContains(Protocol protocol);
+
+    Stream<Process> findByInputBundleManifestsContains(BundleManifest bundleManifest);
 }

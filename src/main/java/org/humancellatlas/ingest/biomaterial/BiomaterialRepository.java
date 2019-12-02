@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,26 +27,31 @@ public interface BiomaterialRepository extends MongoRepository<Biomaterial, Stri
     @RestResource(rel = "findByUuid", path = "findByUuid")
     Optional<Biomaterial> findByUuidUuidAndIsUpdateFalse(@Param("uuid") UUID uuid);
 
-    Page<Biomaterial> findBySubmissionEnvelopesContaining(SubmissionEnvelope submissionEnvelope,
+    Page<Biomaterial> findBySubmissionEnvelope(SubmissionEnvelope submissionEnvelope,
             Pageable pageable);
 
     @RestResource(exported = false)
-    List<Biomaterial> findBySubmissionEnvelopesContaining(SubmissionEnvelope submissionEnvelope);
+    Stream<Biomaterial> findBySubmissionEnvelope(SubmissionEnvelope submissionEnvelope);
+
+    @RestResource(exported = false)
+    Collection<Biomaterial> findAllBySubmissionEnvelope(SubmissionEnvelope submissionEnvelope);
+
+    @RestResource(exported = false)
+    Long deleteBySubmissionEnvelope(SubmissionEnvelope submissionEnvelope);
 
     @RestResource(rel = "findBySubmissionAndValidationState")
-    public Page<Biomaterial> findBySubmissionEnvelopesContainingAndValidationState(@Param
+    public Page<Biomaterial> findBySubmissionEnvelopeAndValidationState(@Param
             ("envelopeUri") SubmissionEnvelope submissionEnvelope, @Param("state")
             ValidationState state, Pageable pageable);
 
     @RestResource(exported = false)
-    List<Biomaterial> findByInputToProcessesContains(Process process);
+    Stream<Biomaterial> findByInputToProcessesContains(Process process);
 
     Page<Biomaterial> findByInputToProcessesContaining(Process process, Pageable pageable);
 
     @RestResource(exported = false)
-    List<Biomaterial> findByDerivedByProcessesContains(Process process);
+    Stream<Biomaterial> findByDerivedByProcessesContains(Process process);
 
     Page<Biomaterial> findByDerivedByProcessesContaining(Process process, Pageable pageable);
 
 }
-
