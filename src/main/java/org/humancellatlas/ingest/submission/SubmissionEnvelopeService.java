@@ -123,11 +123,11 @@ public class SubmissionEnvelopeService {
         return insertedSubmissionEnvelope;
     }
 
-    public void asyncDeleteSubmission(SubmissionEnvelope submissionEnvelope, boolean forceDelete) {
-        this.executorService.submit(() -> this.deleteSubmission(submissionEnvelope, forceDelete));
+    public void asyncDeleteSubmission(SubmissionEnvelope submissionEnvelope) {
+        this.executorService.submit(() -> this.deleteSubmission(submissionEnvelope));
     }
 
-    public void deleteSubmission(SubmissionEnvelope submissionEnvelope, boolean forceDelete) {
+    public void deleteSubmission(SubmissionEnvelope submissionEnvelope) {
         this.cleanupLinksToSubmissionMetadata(submissionEnvelope);
 
         biomaterialRepository.deleteBySubmissionEnvelope(submissionEnvelope);
