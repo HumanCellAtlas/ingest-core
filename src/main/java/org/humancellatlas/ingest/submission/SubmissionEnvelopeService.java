@@ -123,6 +123,10 @@ public class SubmissionEnvelopeService {
         return insertedSubmissionEnvelope;
     }
 
+    public void asyncDeleteSubmission(SubmissionEnvelope submissionEnvelope, boolean forceDelete) {
+        this.executorService.submit(() -> this.deleteSubmission(submissionEnvelope, forceDelete));
+    }
+
     public void deleteSubmission(SubmissionEnvelope submissionEnvelope, boolean forceDelete) {
         if (!(submissionEnvelope.isOpen() || forceDelete))
             throw new UnsupportedOperationException("Cannot delete submission if it is already submitted!");
