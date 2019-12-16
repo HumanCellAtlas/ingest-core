@@ -96,7 +96,7 @@ public class SubmissionControllerTest {
 
         //then:
         assertThat(response).isNotNull();
-        verify(submissionEnvelopeService).deleteSubmission(submissionEnvelope, false);
+        verify(submissionEnvelopeService).asyncDeleteSubmission(submissionEnvelope, false);
     }
 
     @Test
@@ -109,7 +109,7 @@ public class SubmissionControllerTest {
 
         //then:
         assertThat(response).isNotNull();
-        verify(submissionEnvelopeService).deleteSubmission(submissionEnvelope, true);
+        verify(submissionEnvelopeService).asyncDeleteSubmission(submissionEnvelope, true);
     }
     @Configuration
     static class TestConfiguration {}
