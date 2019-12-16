@@ -268,6 +268,9 @@ public class SubmissionController {
     @RequestMapping(path = "/submissionEnvelopes/{id}", method = RequestMethod.DELETE)
     HttpEntity<?> forceDeleteSubmission(@PathVariable("id") SubmissionEnvelope submissionEnvelope,
                                         @RequestParam(name = "force", required = false, defaultValue = "false") boolean forceDelete) {
+        if (!(submissionEnvelope.isOpen() || forceDelete))
+            throw new UnsupportedOperationException("Cannot delete submission if it is already submitted!");
+
         getSubmissionEnvelopeService().asyncDeleteSubmission(submissionEnvelope, forceDelete);
         return ResponseEntity.accepted().build();
     }
