@@ -1,5 +1,6 @@
 package org.humancellatlas.ingest.submission.web;
 
+import org.assertj.core.api.ThrowableAssert;
 import org.humancellatlas.ingest.biomaterial.BiomaterialRepository;
 import org.humancellatlas.ingest.bundle.BundleManifestRepository;
 import org.humancellatlas.ingest.export.Exporter;
@@ -25,6 +26,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.humancellatlas.ingest.state.SubmissionState.COMPLETE;
 import static org.humancellatlas.ingest.state.SubmissionState.SUBMITTED;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -90,13 +93,13 @@ public class SubmissionControllerTest {
     public void testDeleteSubmissionEnvelopeWithoutForce() {
         //given:
         SubmissionEnvelope submissionEnvelope = new SubmissionEnvelope();
+        submissionEnvelope.enactStateTransition(COMPLETE);
 
         //when:
-        HttpEntity<?> response = controller.forceDeleteSubmission(submissionEnvelope, false);
+        ThrowableAssert.ThrowingCallable badDeletionRequest = () -> controller.forceDeleteSubmission(submissionEnvelope, false);
 
         //then:
-        assertThat(response).isNotNull();
-        verify(submissionEnvelopeService).deleteSubmission(submissionEnvelope, false);
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(badDeletionRequest);
     }
 
     @Test
@@ -109,7 +112,7 @@ public class SubmissionControllerTest {
 
         //then:
         assertThat(response).isNotNull();
-        verify(submissionEnvelopeService).deleteSubmission(submissionEnvelope, true);
+        verify(submissionEnvelopeService).asyncDeleteSubmission(submissionEnvelope);
     }
     @Configuration
     static class TestConfiguration {}
