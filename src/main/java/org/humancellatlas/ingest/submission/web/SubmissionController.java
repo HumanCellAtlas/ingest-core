@@ -271,7 +271,7 @@ public class SubmissionController {
         if (!(submissionEnvelope.isOpen() || forceDelete))
             throw new UnsupportedOperationException("Cannot delete submission if it is already submitted!");
 
-        getSubmissionEnvelopeService().asyncDeleteSubmission(submissionEnvelope, forceDelete);
+        getSubmissionEnvelopeService().asyncDeleteSubmission(submissionEnvelope);
         return ResponseEntity.accepted().build();
     }
 }

@@ -172,7 +172,7 @@ public class SubmissionServiceTest {
         when(fileRepository.findByDerivedByProcessesContains(testProcess)).thenReturn(Stream.of(testOutsideFile));
         when(processRepository.findByProtocolsContains(testProtocol)).thenReturn(Stream.of(testOutsideProcess));
 
-        service.deleteSubmission(submissionEnvelope, false);
+        service.deleteSubmission(submissionEnvelope);
 
         //then:
         assertThat(testOutsideBiomaterial.getInputToProcesses()).doesNotContain(testProcess);

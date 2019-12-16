@@ -25,6 +25,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.humancellatlas.ingest.state.SubmissionState.SUBMITTED;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -95,8 +96,7 @@ public class SubmissionControllerTest {
         HttpEntity<?> response = controller.forceDeleteSubmission(submissionEnvelope, false);
 
         //then:
-        assertThat(response).isNotNull();
-        verify(submissionEnvelopeService).asyncDeleteSubmission(submissionEnvelope, false);
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> controller.forceDeleteSubmission(submissionEnvelope, false));
     }
 
     @Test
@@ -109,7 +109,7 @@ public class SubmissionControllerTest {
 
         //then:
         assertThat(response).isNotNull();
-        verify(submissionEnvelopeService).asyncDeleteSubmission(submissionEnvelope, true);
+        verify(submissionEnvelopeService).asyncDeleteSubmission(submissionEnvelope);
     }
     @Configuration
     static class TestConfiguration {}
