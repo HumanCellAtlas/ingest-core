@@ -3,6 +3,8 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/024864c09e56bd43a7e9/test_coverage)](https://codeclimate.com/github/HumanCellAtlas/ingest-core/test_coverage)
 [![Docker Repository on Quay](https://quay.io/repository/humancellatlas/ingest-core/status "Docker Repository on Quay")](https://quay.io/repository/humancellatlas/ingest-core)
 
+_This repository was part of HCA DCP/1 and is not maintained anymore. DCP/2 development of this component continues in the forked repository at https://github.com/ebi-ait/ingest-core._
+
 # Ingest Core API
 Core Ingest Service for submitting experimental data to the DCP.
 
